@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext'
 import { MENTORS, UNIVERSITIES, ALL_EXPERTISE } from '../data/mentors'
 import MentorCard from '../components/MentorCard'
 import SubscriptionGate from '../components/SubscriptionGate'
+import Logo from '../components/Logo'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
 
 export default function Mentors() {
@@ -16,89 +17,84 @@ export default function Mentors() {
 
   const filtered = MENTORS.filter(m => {
     const q = search.toLowerCase()
-    const matchSearch = !q ||
-      m.fullName.toLowerCase().includes(q) ||
-      m.university.toLowerCase().includes(q) ||
-      m.field.toLowerCase().includes(q) ||
-      m.expertise.some(e => e.toLowerCase().includes(q))
-    const matchUni = !filterUni || m.university === filterUni
-    const matchExp = !filterExpertise || m.expertise.includes(filterExpertise)
-    return matchSearch && matchUni && matchExp
+    const matchSearch = !q || m.fullName.toLowerCase().includes(q) || m.university.toLowerCase().includes(q) || m.expertise.some(e => e.toLowerCase().includes(q))
+    return matchSearch && (!filterUni || m.university === filterUni) && (!filterExpertise || m.expertise.includes(filterExpertise))
   })
-
-  function clearFilters() {
-    setFilterUni('')
-    setFilterExpertise('')
-    setSearch('')
-  }
 
   const hasFilters = filterUni || filterExpertise
 
   return (
-    <div className="pb-24 bg-slate-50 min-h-screen">
+    <div className="pb-28 min-h-screen fade-in"
+      style={{ background: 'linear-gradient(160deg, #0A0F1E 0%, #0A1628 100%)' }}>
+
       {/* Header */}
-      <div className="bg-[#1A2F5E] px-5 pt-12 pb-5">
-        <h1 className="text-white font-bold text-xl mb-4">Mentor Directory 🇬🇧</h1>
-        <div className="flex gap-2">
-          <div className="flex-1 bg-white/10 rounded-xl flex items-center gap-2 px-3">
-            <Search size={16} className="text-slate-300 flex-shrink-0" />
-            <input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
+      <div className="px-5 pt-12 pb-6">
+        <Logo size="sm" />
+        <h1 className="text-white font-bold text-2xl mt-5"
+          style={{ fontFamily: 'Playfair Display, serif' }}>
+          Mentor <span className="gold-text">Directory</span>
+        </h1>
+        <p className="text-slate-400 text-sm mt-1">Mentor Indonesia terbaik di United Kingdom 🇬🇧</p>
+
+        {/* Search bar */}
+        <div className="flex gap-2 mt-4">
+          <div className="flex-1 flex items-center gap-2 rounded-2xl px-4"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(201,168,76,0.15)' }}>
+            <Search size={15} style={{ color: '#C9A84C', flexShrink: 0 }} />
+            <input value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Cari nama, universitas, keahlian..."
-              className="bg-transparent text-white placeholder:text-slate-400 text-sm py-2.5 outline-none flex-1 min-w-0"
-            />
+              className="bg-transparent text-white placeholder:text-slate-500 text-sm py-3 outline-none flex-1 min-w-0" />
           </div>
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
-              hasFilters ? 'bg-[#F4B942]' : 'bg-white/10'
-            }`}
-          >
-            <SlidersHorizontal size={18} className={hasFilters ? 'text-[#1A2F5E]' : 'text-white'} />
+          <button onClick={() => setShowFilters(!showFilters)}
+            className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all"
+            style={hasFilters
+              ? { background: 'linear-gradient(135deg, #C9A84C, #E8C96A)', boxShadow: '0 4px 16px rgba(201,168,76,0.3)' }
+              : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(201,168,76,0.15)' }}>
+            <SlidersHorizontal size={17} style={{ color: hasFilters ? '#0A1628' : '#C9A84C' }} />
           </button>
         </div>
       </div>
 
-      {/* Filters dropdown */}
+      {/* Filters */}
       {showFilters && (
-        <div className="bg-white px-4 py-4 border-b border-slate-100 shadow-sm">
+        <div className="mx-4 mb-4 rounded-2xl p-4 fade-in"
+          style={{ background: 'linear-gradient(145deg, #0F1829, #111827)', border: '1px solid rgba(201,168,76,0.15)' }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-semibold text-[#1A2F5E]">Filter</span>
+            <span className="text-sm font-semibold text-white">Filter</span>
             {hasFilters && (
-              <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-red-500">
-                <X size={12} /> Reset
+              <button onClick={() => { setFilterUni(''); setFilterExpertise('') }}
+                className="flex items-center gap-1 text-xs" style={{ color: '#ef4444' }}>
+                <X size={11} /> Reset
               </button>
             )}
           </div>
           <div className="space-y-3">
-            <div>
-              <label className="block text-xs text-slate-500 mb-1 font-medium">Universitas / Perusahaan</label>
-              <select value={filterUni} onChange={e => setFilterUni(e.target.value)}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none bg-white">
-                <option value="">Semua</option>
-                {UNIVERSITIES.map(u => <option key={u} value={u}>{u}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-slate-500 mb-1 font-medium">Area Keahlian</label>
-              <select value={filterExpertise} onChange={e => setFilterExpertise(e.target.value)}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none bg-white">
-                <option value="">Semua</option>
-                {ALL_EXPERTISE.map(e => <option key={e} value={e}>{e}</option>)}
-              </select>
-            </div>
+            {[
+              { label: 'Universitas', value: filterUni, onChange: setFilterUni, options: UNIVERSITIES },
+              { label: 'Keahlian', value: filterExpertise, onChange: setFilterExpertise, options: ALL_EXPERTISE },
+            ].map(f => (
+              <div key={f.label}>
+                <label className="block text-xs mb-1" style={{ color: '#64748b' }}>{f.label}</label>
+                <select value={f.value} onChange={e => f.onChange(e.target.value)}
+                  className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(201,168,76,0.15)', color: '#e2e8f0' }}>
+                  <option value="" style={{ background: '#0F1829' }}>Semua</option>
+                  {f.options.map(o => <option key={o} value={o} style={{ background: '#0F1829' }}>{o}</option>)}
+                </select>
+              </div>
+            ))}
           </div>
         </div>
       )}
 
-      <div className="px-4 pt-4">
-        <p className="text-xs text-slate-400 mb-3">{filtered.length} mentor ditemukan</p>
+      <div className="px-4">
+        <p className="text-xs mb-4" style={{ color: 'rgba(201,168,76,0.5)' }}>
+          {filtered.length} mentor ditemukan
+        </p>
         {filtered.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-4xl mb-3">🔍</p>
-            <p className="text-slate-500 text-sm">Tidak ada mentor yang cocok.</p>
-            <button onClick={clearFilters} className="mt-3 text-[#1A2F5E] text-sm font-semibold">Reset filter</button>
+            <p className="text-slate-400 text-sm">Tidak ada mentor yang cocok.</p>
           </div>
         ) : (
           <div className="space-y-3">

@@ -15,8 +15,8 @@ function AppShell() {
 
   if (!currentUser) {
     return (
-      <div className="flex justify-center min-h-screen bg-slate-200">
-        <div className="w-full max-w-[480px] min-h-screen bg-[#1A2F5E]">
+      <div className="flex justify-center min-h-screen" style={{ background: '#050810' }}>
+        <div className="w-full max-w-[480px] min-h-screen relative">
           <Login />
         </div>
       </div>
@@ -24,8 +24,9 @@ function AppShell() {
   }
 
   return (
-    <div className="flex justify-center min-h-screen bg-slate-200">
-      <div className="w-full max-w-[480px] min-h-screen bg-slate-50 relative overflow-hidden">
+    <div className="flex justify-center min-h-screen" style={{ background: '#050810' }}>
+      <div className="w-full max-w-[480px] min-h-screen relative overflow-hidden"
+        style={{ background: 'linear-gradient(160deg, #0A0F1E 0%, #0A1628 100%)' }}>
         <div className="h-full overflow-y-auto" style={{ paddingBottom: '80px' }}>
           <Routes>
             <Route path="/" element={<Home />} />
